@@ -43,18 +43,29 @@ impl E8Lattice {
     }
 }
 
+// use leech_lattice::LeechLattice as LeechLatticeImpl;
+
 impl LeechLattice {
     pub fn construct() -> Self {
+        // In a real implementation, we would construct the Leech lattice here.
+        // For now, we'll just return a placeholder.
         LeechLattice
     }
 
     pub fn hash_to_point(&self, message: &[u8]) -> Vec<i64> {
         // Placeholder for hashing message to a point on the lattice
-        vec![0; 24]
+        // In a real implementation, we would use a proper hash function.
+        let mut vec = vec![0; 24];
+        for (i, byte) in message.iter().enumerate() {
+            vec[i % 24] += *byte as i64;
+        }
+        vec
     }
 
     pub fn closest_vector(&self, point: Vec<i64>) -> Vec<i64> {
         // Placeholder for closest vector problem solution
+        // This is a hard problem, and in a real implementation, we would use
+        // an algorithm like the Fincke-Pohst algorithm.
         point
     }
 }
