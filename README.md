@@ -39,7 +39,7 @@ Unlike traditional crypto (ECDSA, RSA), E8Coin uses mathematical structures that
 
 ```bash
 # Clone the repo
-git clone https://github.com/YOUR_USERNAME/e8coin
+git clone https://github.com/lanryweezy/e8coin
 cd e8coin
 
 # Create virtual environment
