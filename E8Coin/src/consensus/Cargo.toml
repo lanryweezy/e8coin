@@ -4,5 +4,4 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-# We will need a way to interact with Python, e.g., pyo3
-# pyo3 = { version = "0.16.5", features = ["full"] }
+pyo3 = { version = "0.16.5", features = ["full"] }
