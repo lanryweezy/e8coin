@@ -5,4 +5,4 @@ edition = "2021"
 
 [dependencies]
 rand = "0.8.5"
-# leech-lattice = { git = "https://github.com/some-crypto-researcher/leech-lattice.git", branch = "main" } # Placeholder
+nalgebra = "0.32.3"

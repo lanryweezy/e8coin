@@ -1,11 +1,12 @@
 use wasm_bindgen::prelude::*;
 use serde::{Serialize, Deserialize};
+use wasm_bindgen::prelude::*;
 
 // Placeholder structures and methods
-#[derive(Default, Serialize, Deserialize)]
+#[derive(Default, Serialize, Deserialize, Clone)]
 pub struct LatticeProgram;
 
-#[derive(Default, Serialize, Deserialize)]
+#[derive(Default, Serialize, Deserialize, Clone)]
 pub struct ContractState;
 
 #[wasm_bindgen]
@@ -24,11 +25,11 @@ impl SymContract {
         }
     }
 
-    pub fn execute(&mut self, input: JsValue) -> JsValue {
+    pub async fn execute(&mut self, input: JsValue) -> Result<JsValue, JsValue> {
         // Quantum-safe contract execution
-        let result = self.code.execute_in_sandbox(input);
+        let result = self.code.execute_in_sandbox(input).await;
         self.update_state(result.clone());
-        serde_wasm_bindgen::to_value(&result).unwrap()
+        serde_wasm_bindgen::to_value(&result).map_err(|e| e.into())
     }
 
     fn update_state(&mut self, result: LatticeProgram) {
@@ -43,7 +44,7 @@ impl ContractState {
 }
 
 impl LatticeProgram {
-    pub fn execute_in_sandbox(&self, input: JsValue) -> LatticeProgram {
+    pub async fn execute_in_sandbox(&self, input: JsValue) -> LatticeProgram {
         // Placeholder for executing the lattice program in a sandbox
         LatticeProgram
     }

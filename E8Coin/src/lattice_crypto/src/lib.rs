@@ -43,30 +43,46 @@ impl E8Lattice {
     }
 }
 
-// use leech_lattice::LeechLattice as LeechLatticeImpl;
+use nalgebra::{DMatrix, DVector};
+
+const LEECH_LATTICE_DIM: usize = 24;
 
 impl LeechLattice {
     pub fn construct() -> Self {
-        // In a real implementation, we would construct the Leech lattice here.
-        // For now, we'll just return a placeholder.
         LeechLattice
     }
 
-    pub fn hash_to_point(&self, message: &[u8]) -> Vec<i64> {
-        // Placeholder for hashing message to a point on the lattice
-        // In a real implementation, we would use a proper hash function.
-        let mut vec = vec![0; 24];
+    pub fn hash_to_point(&self, message: &[u8]) -> DVector<f64> {
+        let mut vec = DVector::from_element(LEECH_LATTICE_DIM, 0.0);
         for (i, byte) in message.iter().enumerate() {
-            vec[i % 24] += *byte as i64;
+            vec[i % LEECH_LATTICE_DIM] += *byte as f64;
         }
         vec
     }
 
-    pub fn closest_vector(&self, point: Vec<i64>) -> Vec<i64> {
-        // Placeholder for closest vector problem solution
-        // This is a hard problem, and in a real implementation, we would use
-        // an algorithm like the Fincke-Pohst algorithm.
-        point
+    pub fn closest_vector(&self, point: &DVector<f64>) -> DVector<f64> {
+        // This is a simplified implementation of the closest vector problem.
+        // A real implementation would use a more sophisticated algorithm.
+        let generator_matrix = Self::generator_matrix();
+        let mut closest_vector = DVector::from_element(LEECH_LATTICE_DIM, 0.0);
+        let mut min_dist = f64::MAX;
+
+        for i in 0..1000 {
+            let mut random_vec = DVector::from_fn(LEECH_LATTICE_DIM, |_, _| rand::random::<f64>() * 2.0 - 1.0);
+            let lattice_point = &generator_matrix * &random_vec;
+            let dist = (point - &lattice_point).norm();
+            if dist < min_dist {
+                min_dist = dist;
+                closest_vector = lattice_point;
+            }
+        }
+        closest_vector
+    }
+
+    fn generator_matrix() -> DMatrix<f64> {
+        // This is a placeholder for the Leech lattice generator matrix.
+        // A real implementation would use the actual generator matrix.
+        DMatrix::identity(LEECH_LATTICE_DIM, LEECH_LATTICE_DIM)
     }
 }
 
@@ -98,8 +114,8 @@ impl SymCoinCrypto {
     pub fn quantum_safe_sign(&self, message: &[u8]) -> Signature {
         // Use Leech lattice for digital signatures
         let point = self.leech.hash_to_point(message);
-        let signature = self.leech.closest_vector(point);
-        Signature::new(signature)
+        let signature = self.leech.closest_vector(&point);
+        Signature::new(signature.iter().map(|&x| x as i64).collect())
     }
 
     pub fn generate_address(&self) -> Address {
