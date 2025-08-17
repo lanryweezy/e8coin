@@ -5,13 +5,20 @@ class QuantumWallet:
     def __init__(self, address):
         self.address = address
 
+from wasmer import engine, Store, Module, Instance
+from wasmer_compiler_cranelift import Compiler
+
 def load_wasm_module(module_name):
     """
     Loads a WebAssembly module.
     """
     print(f"Loading wasm module: {module_name}")
-    # Placeholder for loading wasm module
-    return WasmModule()
+
+    # Let's compile the Wasm module.
+    store = Store(engine.JIT(Compiler))
+    module = Module(store, open(module_name, 'rb').read())
+    instance = Instance(module)
+    return instance.exports
 
 class WasmModule:
     def generate_address(self):

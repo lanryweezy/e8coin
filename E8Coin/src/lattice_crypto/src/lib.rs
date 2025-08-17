@@ -45,6 +45,7 @@ impl E8Lattice {
 
 use nalgebra::{DMatrix, DVector};
 
+mod golay;
 const LEECH_LATTICE_DIM: usize = 24;
 
 impl LeechLattice {
@@ -79,10 +80,30 @@ impl LeechLattice {
         closest_vector
     }
 
-    fn generator_matrix() -> DMatrix<f64> {
-        // This is a placeholder for the Leech lattice generator matrix.
-        // A real implementation would use the actual generator matrix.
-        DMatrix::identity(LEECH_LATTICE_DIM, LEECH_LATTICE_DIM)
+    pub fn generator_matrix() -> DMatrix<f64> {
+        let mut matrix = DMatrix::<f64>::zeros(LEECH_LATTICE_DIM, LEECH_LATTICE_DIM);
+        let golay_matrix = golay::GolayCode::generator_matrix();
+
+        for i in 0..12 {
+            for j in 0..24 {
+                matrix[(i, j)] = (golay_matrix[i][j] * 2) as f64;
+            }
+        }
+
+        for i in 0..12 {
+            for j in 0..12 {
+                if i == j {
+                    matrix[(i + 12, j)] = 4.0;
+                } else {
+                    matrix[(i + 12, j)] = 0.0;
+                }
+            }
+            for j in 0..12 {
+                matrix[(i + 12, j + 12)] = 2.0;
+            }
+        }
+
+        matrix
     }
 }
 
